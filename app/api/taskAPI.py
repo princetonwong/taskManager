@@ -4,27 +4,20 @@ from typing import List
 from sqlmodel import Session, select
 from ..database import Database
 from uuid import UUID
-import logging
 
 TaskRouter = APIRouter()
 
 
-@TaskRouter.post("/addSampleData/", response_model=List[TaskRead], include_in_schema=False)
-def addSampleData():
-    db = Database().session
-    if db.query(Task).count() > 0:
-        logging.info(f"Sample data already added")
-        return
-    db.add(Task(name="Do the dishes", description="I should do the dishes today", done=False))
-    db.add(Task(name="Do the laundry", description="I should do the laundry today", done=False))
-    db.add(Task(name="Do the backyard", description="I should do the backyard today", done=True))
-    db.commit()
-    logging.info(f"Sample data added")
-    return db.query(Task).all()
-
 @TaskRouter.post("/tasks/", response_model=TaskRead, status_code=status.HTTP_201_CREATED)
 async def create_task(task: TaskCreate,
                       db: Session = Depends(Database().getSession)):
+
+    # Check if user exists, if not create one
+    from ..model.userModel import User
+    if not db.get(User, task.created_by):
+        db.add(User(id=task.created_by))
+        db.commit()
+
     db_task = Task.from_orm(task)
     db.add(db_task)
     db.commit()
