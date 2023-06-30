@@ -1,7 +1,11 @@
 version: "3.8"
 services:
   backend:
-    build: .
+    volumes:
+        - .:/app
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: backend
     restart: always
     ports:
@@ -11,8 +15,8 @@ services:
       - DB_NAME=postgres
       - POSTGRES_USER=user-name
       - POSTGRES_PASSWORD=strong-password
-#    depends_on:
-#      - pgdb
+    depends_on:
+      - pgdb
     networks:
       - backend-network
 
