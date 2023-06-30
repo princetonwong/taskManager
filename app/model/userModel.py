@@ -6,10 +6,8 @@ from uuid import uuid4, UUID
 
 class UserBase(SQLModel):
     created_at: datetime = Field(default=datetime.utcnow(), nullable=False)
-    # last_edited: datetime = Field(default_factory=datetime.utcnow, nullable=False)
-
     created_tasks: List["Task"] = Relationship(back_populates="created_by_user")
-    # updated_tasks: List["Task"] = Relationship(back_populates="last_updated_by_user")
+    updated_tasks: List["Task"] = Relationship(back_populates="updated_by_user")
 
 
 class User(UserBase, table=True):

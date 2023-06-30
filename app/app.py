@@ -35,12 +35,21 @@ def addSampleData():
     if db.query(Task).count() > 0:
         logging.info(f"Sample data already added")
         return
-    user = User(id="d0e3d3e0-0b7e-4b1e-8b7a-5b0b6b9b0b6b")
-    db.add(user)
-    db.commit()
-    db.add(Task(name="Do the dishes", description="I should do the dishes today", done=False, created_by=user.id))
-    db.add(Task(name="Do the laundry", description="I should do the laundry today", done=False, created_by=user.id))
-    db.add(Task(name="Do the backyard", description="I should do the backyard today", done=True, created_by=user.id))
+
+    users = [User(id="d0e3d3e0-0b7e-4b1e-8b7a-5b0b6b9b0b6b"),
+             User(id="d0e3d3e0-0b7e-4b1e-8b7a-5b0b6b9b0b6c"),
+        ]
+    for user in users:
+        if not db.get(User, user.id):
+            db.add(user)
+            db.commit()
+
+    taskData = [("Do the dishes", "I should do the dishes today", False, users[0].id),
+                ("Do the laundry", "I should do the laundry today", False, users[0].id),
+                ("Do the backyard", "I should do the backyard today", True, users[1].id)
+                ]
+    for task in taskData:
+        db.add(Task(name=task[0], description=task[1], done=task[2], created_by=task[3], updated_by=task[3]))
     db.commit()
     logging.info(f"Sample data added")
     return db.query(Task).all()

@@ -4,6 +4,7 @@ from typing import List
 from sqlmodel import Session, select
 from ..database import Database
 from uuid import UUID
+from ..model.userModel import User
 
 TaskRouter = APIRouter()
 
@@ -13,11 +14,11 @@ async def create_task(task: TaskCreate,
                       db: Session = Depends(Database().getSession)):
 
     # Check if user exists, if not create one
-    from ..model.userModel import User
     if not db.get(User, task.created_by):
         db.add(User(id=task.created_by))
         db.commit()
 
+    task.updated_by = task.created_by
     db_task = Task.from_orm(task)
     db.add(db_task)
     db.commit()
@@ -46,6 +47,10 @@ async def read_task(task_id: UUID,
 async def update_task(task_id: UUID,
                       task: TaskUpdate,
                       db: Session = Depends(Database().getSession)):
+    if not db.get(User, task.updated_by):
+        db.add(User(id=task.updated_by))
+        db.commit()
+
     db_task = db.get(Task, task_id)
     if not db_task:
         raise HTTPException(status_code=404, detail="Task not found")
