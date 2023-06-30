@@ -45,3 +45,4 @@ class Database:
             logging.info(f"Connecting to DB: {self.POSTGRES_STRING}")
             logging.info(f"DB connected. Tables are: {result.all()}")
             return result.all()
+

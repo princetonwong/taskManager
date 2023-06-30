@@ -7,6 +7,7 @@ from uuid import uuid4, UUID
 class TaskBase(SQLModel):
     name: str = Field(default=None, index=True)
     description: str
+    done: bool = Field(default=False)
     created_at: datetime = Field(default=datetime.utcnow(), nullable=False)
     last_edited: datetime = Field(default_factory=datetime.utcnow, nullable=False)
 
