@@ -16,9 +16,7 @@ middlewares = [
 app = FastAPI(middleware=middlewares)
 # app.include_router(AuthRouter, prefix="/auth", tags=["auth"])
 from .api.taskAPI import TaskRouter
-app.include_router(TaskRouter, prefix="/api/v1/task", tags=["task"])
-from .api.heroAPI import HeroRouter
-app.include_router(HeroRouter, prefix="/api/v1/hero", tags=["hero"])
+app.include_router(TaskRouter, prefix="/api/v1", tags=["task"])
 
 
 @app.on_event("startup")

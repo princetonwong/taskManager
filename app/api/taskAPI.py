@@ -1,14 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from ..model.taskModel import Task, TaskCreate, TaskRead, TaskUpdate
 from typing import List
-from sqlalchemy.orm import Session
 from sqlmodel import Session, select
 from ..database import Database
 
 TaskRouter = APIRouter()
 
 
-@TaskRouter.post("/tasks/", response_model=TaskRead)
+@TaskRouter.post("/tasks/", response_model=TaskRead, status_code=status.HTTP_201_CREATED)
 async def create_task(task: TaskCreate,
                       db: Session = Depends(Database().getSession)):
     db_task = Task.from_orm(task)
@@ -18,7 +17,7 @@ async def create_task(task: TaskCreate,
     return db_task
 
 
-@TaskRouter.get("/tasks/", response_model=List[TaskRead])
+@TaskRouter.get("/tasks/", response_model=List[TaskRead], status_code=status.HTTP_200_OK)
 async def read_tasks(offset: int = 0,
                      limit: int = Query(default=100, lte=100),
                      db: Session = Depends(Database().getSession)):
@@ -26,7 +25,7 @@ async def read_tasks(offset: int = 0,
     return tasks
 
 
-@TaskRouter.get("/tasks/{task_id}", response_model=TaskRead)
+@TaskRouter.get("/tasks/{task_id}", response_model=TaskRead, status_code=status.HTTP_200_OK)
 async def read_task(task_id: int,
                     db: Session = Depends(Database().getSession)):
     task = db.get(Task, task_id)
@@ -34,8 +33,7 @@ async def read_task(task_id: int,
         raise HTTPException(status_code=404, detail="Task not found")
     return task
 
-
-@TaskRouter.patch("/tasks/{task_id}", response_model=TaskRead)
+@TaskRouter.patch("/tasks/{task_id}", response_model=TaskRead, status_code=status.HTTP_202_ACCEPTED)
 async def update_task(task_id: int,
                       task: TaskUpdate,
                       db: Session = Depends(Database().getSession)):
@@ -51,7 +49,7 @@ async def update_task(task_id: int,
     return db_task
 
 
-@TaskRouter.delete("/tasks/{task_id}")
+@TaskRouter.delete("/tasks/{task_id}", status_code=status.HTTP_200_OK)
 async def delete_task(task_id: int,
                       db: Session = Depends(Database().getSession)):
     task = db.get(Task, task_id)
@@ -59,4 +57,4 @@ async def delete_task(task_id: int,
         raise HTTPException(status_code=404, detail="Task not found")
     db.delete(task)
     db.commit()
-    return {"ok": True}
+    return {"Message": "Task deleted successfully"}

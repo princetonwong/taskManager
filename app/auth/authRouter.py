@@ -6,16 +6,16 @@ from .supabaseAuth import supabaseClient
 
 
 templates = Jinja2Templates(directory="templates")
-authRouter = APIRouter()
+AuthRouter = APIRouter()
 
 
 # Create a home page with login button
-@authRouter.get('/login', response_class=RedirectResponse, include_in_schema=False)
+@AuthRouter.get('/login', response_class=RedirectResponse, include_in_schema=False)
 async def home(request: Request):
     return templates.TemplateResponse("login.html", {"request": request, "id": id})
 
 
-@authRouter.post('/signup', summary="Create new user")
+@AuthRouter.post('/signup', summary="Create new user")
 async def create_user(form_data: OAuth2PasswordRequestForm = Depends()):
     try:
         res = supabaseClient.auth.sign_up(dict(email=form_data.username, password=form_data.password))
@@ -28,7 +28,7 @@ async def create_user(form_data: OAuth2PasswordRequestForm = Depends()):
     return RedirectResponse(url='/auth/login')
 
 
-@authRouter.post('/login', summary="Create access and refresh tokens for user")
+@AuthRouter.post('/login', summary="Create access and refresh tokens for user")
 async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     try:
         res = supabaseClient.auth.sign_in_with_password(dict(email=form_data.username, password=form_data.password))
@@ -49,13 +49,13 @@ async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends
              ))
 
 
-@authRouter.post("/logout", summary="Logout user")
+@AuthRouter.post("/logout", summary="Logout user")
 async def logout(session=Depends(supabaseClient.auth.get_session)):
     res = supabaseClient.auth.sign_out()
     # 302 means redirect POST to GET
     return RedirectResponse(url='/auth/login', status_code=status.HTTP_302_FOUND)
 
 
-@authRouter.get('/session', summary='Get details of currently logged in user')
+@AuthRouter.get('/session', summary='Get details of currently logged in user')
 async def get_me(session=Depends(supabaseClient.auth.get_session)):
     return session

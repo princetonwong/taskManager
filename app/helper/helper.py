@@ -12,6 +12,11 @@ class Helper:
         return get_instance
 
     @staticmethod
+    def loadEnv():
+        from dotenv import load_dotenv
+        load_dotenv()
+
+    @staticmethod
     def getEnv(key):
         from os import getenv
         return getenv(key)
