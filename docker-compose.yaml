@@ -11,10 +11,11 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DB_HOST=local_pgdb
-      - DB_NAME=postgres
+      - POSTGRES_HOST=local_pgdb
+      - POSTGRES_DB=postgres
       - POSTGRES_USER=user-name
       - POSTGRES_PASSWORD=strong-password
+      - POSTGRES_PORT=5432
     depends_on:
       - pgdb
     networks:

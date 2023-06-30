@@ -1,6 +1,11 @@
 from fastapi import FastAPI
+from .db import Database
+import logging
 
+logging.basicConfig(level=logging.INFO)
 app = FastAPI()
+Database().init_db()
+Database().listAllTables()
 
 @app.get("/")
 async def root():
