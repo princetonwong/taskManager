@@ -1,6 +1,5 @@
 from typing import List, Optional
 from sqlmodel import Field, SQLModel, Relationship
-from .userModel import User
 from datetime import datetime
 
 
