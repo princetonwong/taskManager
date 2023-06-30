@@ -1,7 +1,7 @@
-from typing import Optional, List
+from typing import List
 from sqlmodel import Field, SQLModel, Relationship
 from datetime import datetime
-from uuid import uuid4, UUID
+from uuid import UUID
 
 
 class UserBase(SQLModel):

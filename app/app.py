@@ -38,7 +38,7 @@ def addSampleData():
 
     users = [User(id="d0e3d3e0-0b7e-4b1e-8b7a-5b0b6b9b0b6b"),
              User(id="d0e3d3e0-0b7e-4b1e-8b7a-5b0b6b9b0b6c"),
-        ]
+             ]
     for user in users:
         if not db.get(User, user.id):
             db.add(user)
@@ -58,4 +58,3 @@ def addSampleData():
 @app.get("/", tags=["root"])
 async def root():
     return RedirectResponse(url="/docs")
-
