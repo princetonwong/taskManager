@@ -38,7 +38,7 @@ http://localhost:8000/auth/login
 ## Unit-test by pytest
 Run the following command to test the application:
 ```
-docker exec -it backend pytest
+docker exec -it taskmanager-backend pytest
 ```
 
 If there is no data in the database, the app will automatically create sample data for you.
