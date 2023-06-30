@@ -1,0 +1,53 @@
+version: "3.8"
+services:
+  backend:
+    build: .
+    container_name: backend
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=local_pgdb
+      - DB_NAME=postgres
+      - POSTGRES_USER=user-name
+      - POSTGRES_PASSWORD=strong-password
+#    depends_on:
+#      - pgdb
+    networks:
+      - backend-network
+
+  pgdb:
+    image: postgres
+    container_name: local_pgdb
+    restart: always
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: user-name
+      POSTGRES_PASSWORD: strong-password
+    volumes:
+      - local_pgdata:/var/lib/postgresql/data
+    networks:
+      - backend-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: princeton.wong@pureblue.com.hk
+      PGADMIN_DEFAULT_PASSWORD: password
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - backend-network
+
+volumes:
+  local_pgdata:
+  pgadmin-data:
+
+networks:
+  backend-network:
+    driver: bridge
