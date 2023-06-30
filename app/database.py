@@ -14,6 +14,9 @@ class Database:
                                     future=False)
         self.session = sessionmaker(bind=self.engine)()
 
+    def getEngine(self):
+        return self.engine
+
     def init_db(self):
         SQLModel.metadata.create_all(self.engine)
 
@@ -35,4 +38,4 @@ class Database:
             ORDER BY table_name;
             """)
             logging.info(f"DB connected. Tables are: {result.all()}")
-            return result
+            return result.all()
