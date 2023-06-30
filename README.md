@@ -22,9 +22,9 @@ The app is containerized using Docker and docker-compose.
 It is tested using pytest.
 
 ## Quickstart by docker
-Run the following command to start the application:
+Run the following command to deploy the application:
 ```
-docker-compose -f docker-compose.yaml up
+docker-compose -f docker-compose.yaml up -d
 ```
 
 ## See the API documentation
