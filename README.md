@@ -41,4 +41,6 @@ Run the following command to test the application:
 docker exec -it backend pytest
 ```
 
+If there is no data in the database, the app will automatically create sample data for you.
+
 

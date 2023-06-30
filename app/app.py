@@ -5,7 +5,7 @@ from starlette.middleware.sessions import SessionMiddleware
 from starlette.responses import RedirectResponse
 
 from .helper import Helper
-from .api import TaskRouter
+from .api import TaskRouter, addSampleData
 from .auth import AuthRouter
 from .database import Database
 import logging
@@ -25,6 +25,8 @@ app.include_router(TaskRouter, prefix="/api/v1", tags=["task"])
 def on_startup():
     Database().init_db()
     Database().listAllTables()
+    addSampleData()
+
 
 
 @app.get("/", tags=["root"])
