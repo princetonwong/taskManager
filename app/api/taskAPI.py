@@ -3,6 +3,7 @@ from ..model.taskModel import Task, TaskCreate, TaskRead, TaskUpdate
 from typing import List
 from sqlmodel import Session, select
 from ..database import Database
+from uuid import UUID
 
 TaskRouter = APIRouter()
 
@@ -26,15 +27,16 @@ async def read_tasks(offset: int = 0,
 
 
 @TaskRouter.get("/tasks/{task_id}", response_model=TaskRead, status_code=status.HTTP_200_OK)
-async def read_task(task_id: int,
+async def read_task(task_id: UUID,
                     db: Session = Depends(Database().getSession)):
     task = db.get(Task, task_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     return task
 
+
 @TaskRouter.patch("/tasks/{task_id}", response_model=TaskRead, status_code=status.HTTP_202_ACCEPTED)
-async def update_task(task_id: int,
+async def update_task(task_id: UUID,
                       task: TaskUpdate,
                       db: Session = Depends(Database().getSession)):
     db_task = db.get(Task, task_id)
@@ -50,7 +52,7 @@ async def update_task(task_id: int,
 
 
 @TaskRouter.delete("/tasks/{task_id}", status_code=status.HTTP_200_OK)
-async def delete_task(task_id: int,
+async def delete_task(task_id: UUID,
                       db: Session = Depends(Database().getSession)):
     task = db.get(Task, task_id)
     if not task:

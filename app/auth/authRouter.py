@@ -30,7 +30,7 @@ async def create_user(form_data: OAuth2PasswordRequestForm = Depends()):
     return RedirectResponse(url='/auth/login')
 
 
-@AuthRouter.post('/login', summary="Create access and refresh tokens for user")
+@AuthRouter.post('/login', summary="Login user with email and password")
 async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
     try:
         res = supabaseClient.auth.sign_in_with_password(
@@ -48,6 +48,12 @@ async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends
     return templates.TemplateResponse(
         "loggedIn.html",
         dict(request=request, session=res.session))
+
+
+@AuthRouter.get("/getUserData", summary="Get user data")
+async def get_user_data():
+    user = supabaseClient.auth.get_user()
+    return user
 
 
 @AuthRouter.post("/logout", summary="Logout user")

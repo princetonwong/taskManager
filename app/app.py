@@ -1,12 +1,14 @@
 from fastapi import FastAPI
-from .database import Database
-import logging
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.middleware.sessions import SessionMiddleware
 from fastapi.middleware import Middleware
+from starlette.middleware.sessions import SessionMiddleware
+from starlette.responses import RedirectResponse
+
 from .helper import Helper
 from .api import TaskRouter
 from .auth import AuthRouter
+from .database import Database
+import logging
 
 logging.basicConfig(level=logging.INFO)
 origins = ["*"]
@@ -25,11 +27,7 @@ def on_startup():
     Database().listAllTables()
 
 
-@app.get("/")
+@app.get("/", tags=["root"])
 async def root():
-    return {"message": "Hello World"}
+    return RedirectResponse(url="/docs")
 
-
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name}"}

@@ -3,11 +3,15 @@ from .helper import Helper as h
 from sqlalchemy.orm import sessionmaker
 import logging
 
+POSTGRES_STRING = f"postgresql+psycopg2://{h.getEnv('POSTGRES_USER')}:" \
+                  f"{h.getEnv('POSTGRES_PASSWORD')}@{h.getEnv('POSTGRES_HOST')}:" \
+                  f"{h.getEnv('POSTGRES_PORT')}/{h.getEnv('POSTGRES_DB')}"
+
 
 @h.singleton
 class Database:
-    def __init__(self):
-        self.POSTGRES_STRING = f"postgresql+psycopg2://{h.getEnv('POSTGRES_USER')}:{h.getEnv('POSTGRES_PASSWORD')}@{h.getEnv('POSTGRES_HOST')}:{h.getEnv('POSTGRES_PORT')}/{h.getEnv('POSTGRES_DB')}"
+    def __init__(self, postgres_string=POSTGRES_STRING):
+        self.POSTGRES_STRING = postgres_string
         self.engine = create_engine(self.POSTGRES_STRING,
                                     pool_size=8,
                                     echo=False,
@@ -31,11 +35,13 @@ class Database:
 
     def listAllTables(self):
         with Session(self.engine) as session:
-            result = session.execute("""
+            result = session.execute(
+            """
             SELECT table_name
             FROM information_schema.tables
             WHERE table_schema = 'public'
             ORDER BY table_name;
             """)
+            logging.info(f"Connecting to DB: {self.POSTGRES_STRING}")
             logging.info(f"DB connected. Tables are: {result.all()}")
             return result.all()
